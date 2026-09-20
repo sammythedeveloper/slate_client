@@ -115,7 +115,7 @@ export default function Dashboard() {
                       {sub.status}
                     </span>
                   </div>
-                  <h3 className="text-xl font-black uppercase tracking-tighter mb-4">
+                  <h3 className="text-xl font-black uppercase tracking-tighter mb-4 break-words">
                     {sub.activity}
                   </h3>
                   <div className="space-y-2 mb-8">
