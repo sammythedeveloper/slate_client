@@ -1,12 +1,12 @@
-//
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Sun, Moon } from "lucide-react"; // 
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar({ userName }) {
   const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
+
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -14,7 +14,16 @@ export default function Navbar({ userName }) {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+
+    setIsOpen(false);
+    setShowLogoutModal(false);
+
     navigate("/signin", { replace: true });
+  };
+
+  const openLogoutModal = () => {
+    setIsOpen(false);
+    setShowLogoutModal(true);
   };
 
   return (
@@ -37,12 +46,14 @@ export default function Navbar({ userName }) {
             >
               Dashboard
             </Link>
+
             <Link
               to="/browse-memberships"
               className="hover:text-black dark:hover:text-white transition-colors"
             >
               Browse
             </Link>
+
             <Link
               to="/About"
               className="hover:text-black dark:hover:text-white transition-colors"
@@ -53,6 +64,7 @@ export default function Navbar({ userName }) {
             <button
               onClick={toggleTheme}
               className="p-1 hover:text-black dark:hover:text-white transition-colors"
+              aria-label="Toggle theme"
             >
               {isDark ? (
                 <Sun className="w-4 h-4" />
@@ -62,90 +74,110 @@ export default function Navbar({ userName }) {
             </button>
 
             <button
-              onClick={() => setShowLogoutModal(true)}
+              onClick={openLogoutModal}
               className="px-6 py-2 border border-zinc-300 dark:border-zinc-700 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
             >
               Sign Out
             </button>
           </div>
 
-          {/* Burger */}
+          {/* Mobile Burger */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden flex flex-col gap-1.5 w-6 h-6"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
           >
             <span
               className={`h-[1px] bg-black dark:bg-white transition-all ${
                 isOpen ? "rotate-45 translate-y-2 w-6" : "w-6"
               }`}
             />
+
             <span
               className={`h-[1px] bg-black dark:bg-white transition-all ${
                 isOpen ? "opacity-0" : "w-5"
               }`}
             />
+
             <span
               className={`h-[1px] bg-black dark:bg-white transition-all ${
                 isOpen ? "-rotate-45 -translate-y-2 w-6" : "w-4"
               }`}
             />
           </button>
+
+          {/* Mobile Menu */}
           {isOpen && (
-            <div className="md:hidden absolute top-full left-0 w-full  backdrop-blur-lg border-b border-zinc-200 dark:border-zinc-900 p-8 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-top-4">
+            <div className="md:hidden absolute top-full left-0 w-full bg-white/95 dark:bg-black/95 backdrop-blur-lg border-b border-zinc-200 dark:border-zinc-900 p-8 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-top-4">
               <Link
                 to="/dashboard"
-                className="text-sm font-semibold tracking-widest hover:text-zinc-500 hover:dark:text-zinc-500 "
+                onClick={() => setIsOpen(false)}
+                className="text-sm font-semibold tracking-widest hover:text-zinc-500 dark:hover:text-zinc-500"
               >
                 Dashboard
               </Link>
+
               <Link
                 to="/browse-memberships"
-                className="text-sm font-semibold tracking-widest hover:text-zinc-500 hover:dark:text-zinc-500 "
+                onClick={() => setIsOpen(false)}
+                className="text-sm font-semibold tracking-widest hover:text-zinc-500 dark:hover:text-zinc-500"
               >
                 Browse
               </Link>
+
               <Link
                 to="/About"
-                className="text-sm font-semibold tracking-widest hover:text-zinc-500 hover:dark:text-zinc-500 "
+                onClick={() => setIsOpen(false)}
+                className="text-sm font-semibold tracking-widest hover:text-zinc-500 dark:hover:text-zinc-500"
               >
                 About
               </Link>
+
+              {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
                 className="flex items-center gap-2 text-sm font-medium tracking-widest uppercase"
+                aria-label="Toggle theme"
               >
                 {isDark ? (
-                  <Sun className="w-4 h-4 hover:text-orange-500 transition-colors duration-300 " />
+                  <Sun className="w-4 h-4 hover:text-orange-500 transition-colors duration-300" />
                 ) : (
-                  <Moon className="w-4 h-4 hover:text-gray-200 transition-colors duration-300 " />
+                  <Moon className="w-4 h-4 hover:text-gray-200 transition-colors duration-300" />
                 )}
               </button>
-              <Link
-                to="/signin"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-semibold tracking-widest hover:text-zinc-500 hover:dark:text-zinc-500 "
+
+              {/* Mobile Sign Out */}
+              <button
+                onClick={openLogoutModal}
+                className="text-sm font-semibold tracking-widest hover:text-zinc-500 dark:hover:text-zinc-500"
               >
-                SIGN IN
-              </Link>
+                SIGN OUT
+              </button>
             </div>
           )}
         </div>
       </nav>
 
-      {/* Logout Modal - SLATE Styling */}
+      {/* Logout Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
+          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-white/50 dark:bg-black/80 backdrop-blur-sm"
             onClick={() => setShowLogoutModal(false)}
           />
-          <div className="relative bg-white dark:bg-[#050505] border border-zinc-300 dark:border-zinc-800 p-12 w-full max-w-sm text-center">
+
+          {/* Modal */}
+          <div className="relative bg-white dark:bg-[#050505] border border-zinc-300 dark:border-zinc-800 p-8 sm:p-12 w-full max-w-sm text-center">
             <h3 className="text-xl font-black tracking-tighter uppercase mb-2">
               Sign Out
             </h3>
+
             <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-8">
               Terminate your active session?
             </p>
+
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleSignOut}
@@ -153,9 +185,10 @@ export default function Navbar({ userName }) {
               >
                 Confirm
               </button>
+
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="w-full py-4 border border-zinc-200 text-black dark:text-white hover:dark:bg-blue-500 hover:dark:text-white hover:bg-blue-500 hover:text-white   dark:border-zinc-800 font-bold text-[10px] uppercase tracking-widest"
+                className="w-full py-4 border border-zinc-200 text-black dark:text-white hover:dark:bg-blue-500 hover:dark:text-white hover:bg-blue-500 hover:text-white dark:border-zinc-800 font-bold text-[10px] uppercase tracking-widest"
               >
                 Cancel
               </button>
